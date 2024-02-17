@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Mathematics;
+// using Unity.Mathematics;
 using UnityEngine;
 // using UnityEditor;
 
@@ -90,7 +90,7 @@ namespace Asteroids
             float newForce = UnityEngine.Random.Range(spawnForce, spawnForce + 0.5f);
 
             //Instantiate new Asteroid.
-            GameObject newAsteroid = Instantiate(asteroidObj, spawnPosition, quaternion.identity);
+            GameObject newAsteroid = Instantiate(asteroidObj, spawnPosition, Quaternion.identity);
 
             newAsteroid.GetComponent<SpriteRenderer>().sprite = asteroidVisuals[(int)UnityEngine.Random.Range(0, asteroidVisuals.Length)];
 
