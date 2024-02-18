@@ -12,7 +12,7 @@ namespace Pong
         // On Ball overlap with goal trigger the ball to score a point and reset
         void OnCollisionEnter2D(Collision2D other)
         {
-            if (other.gameObject.tag == "Ball")
+            if (other.gameObject.CompareTag("Ball"))
             {
                 other.gameObject.GetComponent<Ball>().ScorePoint(goalOwner);
             }

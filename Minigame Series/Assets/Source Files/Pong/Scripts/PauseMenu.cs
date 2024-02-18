@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Pong
 {
@@ -16,18 +17,30 @@ namespace Pong
         //Player references allow access to multiple scripts in the player gameobjects.
         [SerializeField] private GameObject player_left; //Reference to left Player.
         [SerializeField] private GameObject player_right; //Reference to left Player.
+        Vector3 openScale = new Vector3(1f, 1f, 1f); //Represents the scale when the settings panel is open.
+        Vector3 closedScale = new Vector3(); //Represents the scale when the settings panel is closed (initially set to zero scale).
+
+        //Keys
+        readonly KeyCode spaceKey = KeyCode.Space;
+        readonly KeyCode escKey = KeyCode.Escape;
+
 
         // Update is called once per frame
         void Update()
         {
+            Controls();
+        }
+
+        void Controls()
+        {
             //Space to restart match.
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(spaceKey))
             {
                 RestartMatch();
             }
 
             //Escape to pause/unpause game.
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (Input.GetKeyDown(escKey))
             {
                 if (gamePaused)
                 {
@@ -44,20 +57,22 @@ namespace Pong
         public void PauseGame()
         {
             //Make Pause Menu big
-            transform.localScale = new Vector3(1f, 1f, 1f);
+            transform.localScale = openScale;
+            gamePaused = true;
+
             //Freeze Time.
             Time.timeScale = 0;
-            gamePaused = true;
         }
 
         //Removes pause menu and unfreezes time.
         public void ResumeGame()
         {
             //Make Pause Menu Small
-            transform.localScale = new Vector3(0f, 0f, 0f);
+            transform.localScale = closedScale;
+            gamePaused = false;
+
             //Unfreeze Time.
             Time.timeScale = 1;
-            gamePaused = false;
         }
 
         //Restarts whole game.

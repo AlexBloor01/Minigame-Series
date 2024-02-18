@@ -16,10 +16,28 @@ namespace NoughtsAndCrosses
         [SerializeField] private GameObject winner; //Turned on and off for win condition.
         Vector3 middle = new(); //Used to assign middle of screen for play area.
 
+        //Keys
+        readonly KeyCode spaceKey = KeyCode.Space;
+
         private void Start()
         {
             //Starts game fresh.
             RestartMatch();
+        }
+
+        //if spacebar pressed restart the match.
+        //Allows players to gloat a victory and to restart quickly.
+        private void Update()
+        {
+            Controls();
+        }
+
+        void Controls()
+        {
+            if (Input.GetKeyDown(spaceKey))
+            {
+                RestartMatch();
+            }
         }
 
         private void RestartMatch()
@@ -261,16 +279,6 @@ namespace NoughtsAndCrosses
             winner.GetComponent<TextMeshProUGUI>().text = "Draw";
             WinConditionSet();
             //let down sound *crowd* awwwwww
-        }
-
-        //if spacebar pressed restart the match.
-        //Allows players to gloat a victory and to restart quickly.
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                RestartMatch();
-            }
         }
 
     }

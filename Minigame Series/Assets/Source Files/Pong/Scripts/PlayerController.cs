@@ -9,35 +9,55 @@ namespace Pong
         public bool leftHandedMode = true; //Player controls left side player.
         public bool rightHandedMode = true; //Player controls left side player.
 
+        //Right Keys
+        private KeyCode upKey = KeyCode.UpArrow;
+        private KeyCode downKey = KeyCode.DownArrow;
+
+        //Left Keys
+        private KeyCode wKey = KeyCode.W;
+        private KeyCode sKey = KeyCode.S;
+
+
         // Update is called once per frame.
         void FixedUpdate()
         {
-            if (leftHandedMode)
-            {
-                if (Input.GetKey(KeyCode.W))
-                {
-                    paddleMovement.MoveUp();
-                }
-                if (Input.GetKey(KeyCode.S))
-                {
-                    paddleMovement.MoveDown();
-                }
-            }
-
-            if (rightHandedMode)
-            {
-                if (Input.GetKey(KeyCode.UpArrow))
-                {
-                    paddleMovement.MoveUp();
-                }
-                if (Input.GetKey(KeyCode.DownArrow))
-                {
-                    paddleMovement.MoveDown();
-                }
-            }
+            leftHandedControl();
+            RightHandedControl();
 
             //Update the Players position and extra speed bonus on ball.
             paddleMovement.UpdateHitSpeed();
+        }
+
+        //Left hand side of screen controls, dictated by leftHandedMode.
+        void leftHandedControl()
+        {
+            if (leftHandedMode)
+            {
+                if (Input.GetKey(wKey))
+                {
+                    paddleMovement.MoveUp();
+                }
+                if (Input.GetKey(sKey))
+                {
+                    paddleMovement.MoveDown();
+                }
+            }
+        }
+
+        //Right hand side of screen controls, dictated by rightHandedMode.
+        void RightHandedControl()
+        {
+            if (rightHandedMode)
+            {
+                if (Input.GetKey(upKey))
+                {
+                    paddleMovement.MoveUp();
+                }
+                if (Input.GetKey(downKey))
+                {
+                    paddleMovement.MoveDown();
+                }
+            }
         }
 
         //SinglePlayer Controls

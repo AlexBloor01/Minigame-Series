@@ -11,10 +11,24 @@ namespace Asteroids
         Coroutine coroutine;
         [SerializeField] private Movement movement;
         [SerializeField] private Cannon cannon;
-        [SerializeField] private GameObject explosion; //death/hit explosion animation.
-        public PlayerSide playerSide; //only relevant if two player or more.
-        int hit = 0; //how many times has player been hit.
+        [SerializeField] private GameObject explosion; //Death/Hit explosion animation.
+        public PlayerSide playerSide; //Only relevant if two player or more.
+        int hit = 0; //How many times has player been hit.
+        int hitsBeforeDeath = 3; //How many hits before death.
         readonly float deathTick = 10f; //Time for animations before game start over.
+
+        //Keys For Right 
+        readonly private KeyCode upKey = KeyCode.UpArrow;
+        readonly private KeyCode leftKey = KeyCode.LeftArrow;
+        readonly private KeyCode rightKey = KeyCode.RightArrow;
+        readonly private KeyCode leftClickKey = KeyCode.Mouse0; //Attack Key
+
+        //Keys for Left
+        readonly private KeyCode wKey = KeyCode.W;
+        readonly private KeyCode aKey = KeyCode.A;
+        readonly private KeyCode dKey = KeyCode.D;
+        readonly private KeyCode spaceKey = KeyCode.Space; //Attack Key
+
 
         //set this to true to start the game for player.
         private void Start()
@@ -44,7 +58,7 @@ namespace Asteroids
             Instantiate(explosion, transform.position, Quaternion.identity); //blow up anim.
 
             //if hit more than 3 times blow up.
-            if (hit >= 3)
+            if (hit >= hitsBeforeDeath)
             {
                 Death();
             }
@@ -85,61 +99,70 @@ namespace Asteroids
 
         void LeftControls()
         {
-            //Forward
-            if (Input.GetKey(KeyCode.W))
+            //Split controls in two for two players and dont for singleplayer.
+            if (playerSide == PlayerSide.Left || GameAssets.singlePlayer)
             {
-                movement.ForwardThrust();
-            }
-            else
-            {
-                movement.FireOff();
-            }
-            //Left
-            if (Input.GetKey(KeyCode.A))
-            {
-                movement.TurnLeft();
-            }
-            //Right
-            if (Input.GetKey(KeyCode.D))
-            {
-                movement.TurnRight();
-            }
-            //Shoot
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                cannon.FireCannon();
+                //Forward
+                if (Input.GetKey(wKey))
+                {
+                    movement.ForwardThrust();
+                }
+                else
+                {
+                    movement.FireOff();
+                }
+                //Left
+                if (Input.GetKey(aKey))
+                {
+                    movement.TurnLeft();
+                }
+                //Right
+                if (Input.GetKey(dKey))
+                {
+                    movement.TurnRight();
+                }
+                //Shoot
+                if (Input.GetKeyDown(spaceKey))
+                {
+                    cannon.FireCannon();
+                }
             }
 
         }
         void RightControls()
         {
-            //Forward
-            if (Input.GetKey(KeyCode.UpArrow))
+            //Split controls in two for two players and dont for singleplayer.
+            if (playerSide == PlayerSide.Right || GameAssets.singlePlayer)
             {
-                movement.ForwardThrust();
-            }
-            else
-            {
-                //If singleplayer on then dont turn this off twice.
-                if (!GameAssets.singlePlayer)
+                //Forward
+                if (Input.GetKey(upKey))
                 {
-                    movement.FireOff();
+                    movement.ForwardThrust();
                 }
-            }
-            //Left
-            if (Input.GetKey(KeyCode.LeftArrow))
-            {
-                movement.TurnLeft();
-            }
-            //Right
-            if (Input.GetKey(KeyCode.RightArrow))
-            {
-                movement.TurnRight();
-            }
-            //Shoot
-            if (Input.GetMouseButtonDown(0))
-            {
-                cannon.FireCannon();
+                else
+                {
+                    //If singleplayer on then dont turn this off twice.
+                    if (!GameAssets.singlePlayer)
+                    {
+                        movement.FireOff();
+                    }
+                }
+                //Left
+                if (Input.GetKey(leftKey))
+                {
+                    movement.TurnLeft();
+                }
+                //Right
+                if (Input.GetKey(rightKey))
+                {
+                    movement.TurnRight();
+                }
+                //Shoot
+
+                if (Input.GetKeyDown(leftClickKey))
+                {
+                    cannon.FireCannon();
+                }
             }
         }
 
@@ -147,24 +170,8 @@ namespace Asteroids
         {
             if (hit <= 0)
             {
-                if (GameAssets.singlePlayer) //If singleplayer mode then either controls.
-                {
-                    LeftControls();
-                    RightControls();
-                }
-                else
-                {
-                    //Split controls in two for two players.
-                    if (playerSide == PlayerSide.Left)
-                    {
-                        LeftControls();
-                    }
-
-                    if (playerSide == PlayerSide.Right)
-                    {
-                        RightControls();
-                    }
-                }
+                LeftControls();
+                RightControls();
             }
             else
             {
