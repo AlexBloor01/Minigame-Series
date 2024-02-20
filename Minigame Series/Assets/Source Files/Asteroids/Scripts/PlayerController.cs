@@ -8,9 +8,11 @@ namespace Asteroids
     {
         [Header("Player Controls")]
 
+        public GameManager gameManager;
         Coroutine coroutine;
         [SerializeField] private Movement movement;
         [SerializeField] private Cannon cannon;
+        [SerializeField] private GameObject playerNameObj; //Player Name Object, reference to destory on death.
         [SerializeField] private GameObject explosion; //Death/Hit explosion animation.
         public PlayerSide playerSide; //Only relevant if two player or more.
         int hit = 0; //How many times has player been hit.
@@ -44,6 +46,7 @@ namespace Asteroids
             {
                 //player has no controls and is out for the count after one hit, health could be added.
                 GameAssets.numberOfPlayers--;
+                HidePlayerName();
             }
 
             //If there is still a player alive do not stop game, timer, or score.
@@ -64,6 +67,12 @@ namespace Asteroids
             }
         }
 
+        //Hiding the Player name outside of script stops the next Instantiate being false.
+        void HidePlayerName()
+        {
+            playerNameObj.SetActive(false);
+        }
+
         //This will restart the game.
         void Death()
         {
@@ -72,9 +81,10 @@ namespace Asteroids
                 //to stop error with death timer.
                 StopCoroutine(coroutine);
             }
+
+            //Instantiate explosion Particle System.
             Instantiate(explosion, transform.position, Quaternion.identity);
 
-            Debug.Log($"Number of players before <= 0 check {GameAssets.numberOfPlayers}");
             if (GameAssets.numberOfPlayers <= 0)
             {
                 RestartGame();
@@ -86,7 +96,14 @@ namespace Asteroids
         //Restart Game.
         void RestartGame()
         {
-            GameObject.Find("Game Manager").GetComponent<GameManager>().Restart();
+            if (gameManager != null)
+            {
+                gameManager.Restart();
+            }
+            else
+            {
+                GameObject.Find("Game Manager").GetComponent<GameManager>().Restart();
+            }
         }
 
         //This will stop players drifting forever if they have not been hit 3 times in 3 seconds.
@@ -170,8 +187,12 @@ namespace Asteroids
         {
             if (hit <= 0)
             {
-                LeftControls();
-                RightControls();
+                //Check if game is paused.
+                if (Time.timeScale >= 1f)
+                {
+                    LeftControls();
+                    RightControls();
+                }
             }
             else
             {

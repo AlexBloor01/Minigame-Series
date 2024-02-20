@@ -10,8 +10,8 @@ namespace Asteroids
         Coroutine coroutine;  //this Coroutines, the need to be shut off.
         [SerializeField] private Rigidbody2D rb; //this Rigidbody2D.
 
-        private float depreciateTime = 1.25f; //time for bullets to disappear.
-        private float bulletSpeed = 750f; //Speed of bullet after rigidbody force added.
+        [SerializeField] private float depreciateTime = 1.75f; //time for bullets to disappear.
+        [SerializeField] private float bulletSpeed = 750f; //Speed of bullet after rigidbody force added.
 
         private void Start()
         {

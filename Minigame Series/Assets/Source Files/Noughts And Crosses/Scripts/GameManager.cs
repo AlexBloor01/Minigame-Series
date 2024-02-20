@@ -2,19 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Unity.Collections;
+using UnityEngine.UI;
+using System.Drawing;
 
 namespace NoughtsAndCrosses
 {
     public class GameManager : MonoBehaviour
     {
         [Header("Game Manager")]
+
+        [SerializeField] private GridNumbers gridNumbers; //Numbers Chnage Script.
         [SerializeField] private Tile currentPlayer; //Top left tile to indicate the current player.
         [SerializeField] private Tile tile; //Tile tile script to instantiate.
         private Tile[,] tileGrid; //Tile tile script grid matrix.
         private IntVector2 iSize = new IntVector2(3, 3); //Size of play area grid.
         [SerializeField] public static SquareOption currentTurn = SquareOption.Cross; //Whos turn is it?
         [SerializeField] private GameObject winner; //Turned on and off for win condition.
-        Vector3 middle = new(); //Used to assign middle of screen for play area.
+
+
+        Vector3 gridPosition = new Vector3(0f, 35f, 0f); //Where is the going to sit? Go just above middle to leave for text. 
+        [SerializeField] private GridLayoutGroup gridLayout; //GridLayout should be on this Game Manager.
+        [SerializeField] private RectTransform rt; //Get Game managers RectTransform.
+
+        float gridSlotSize = 0.95f; //Represents the percentage size of each space excluding space between, must be below 1f.
 
         //Keys
         readonly KeyCode spaceKey = KeyCode.Space;
@@ -40,7 +51,7 @@ namespace NoughtsAndCrosses
             }
         }
 
-        private void RestartMatch()
+        public void RestartMatch()
         {
             //Set winner to none.
             winner.SetActive(false);
@@ -48,17 +59,17 @@ namespace NoughtsAndCrosses
             //Losing player starts first.
             NextTurn();
 
+            //Reset position and scale variables ready for conversion to canvas UI.
+            ScreenPositionVariableReset();
+
             //Setup new grid.
             SetNewGrid();
-
-            //Reset position and scale variables ready for conversion to canvas UI.
-            MiddleScreenVariableReset();
 
             //Fill the grid with tile and their positions.
             FillNewGrid();
 
             //Setup the grid to the middle of the screen
-            SetupGridPositioning();
+            SetupGridPositioningAndSizing();
         }
 
         //Setup new Grid.
@@ -98,64 +109,66 @@ namespace NoughtsAndCrosses
                     //Assign Game Manager to tile to minimize processing.
                     newSquare.gameManager = this;
 
-                    //Quick implementation of middle tile for positioning this object for center screen.
-                    if (x == 1 && y == 1)
-                    {
-                        middle = newSquare.transform.position;
-                    }
-
                     //Assign to grid point, based on its location.
                     tileGrid[x, y] = newSquare;
                 }
             }
         }
 
-        void MiddleScreenVariableReset()
+        void ScreenPositionVariableReset()
         {
             //Set position to middle of screen and reset scale for UI conversion.
             transform.position = new Vector3();
             transform.localScale = new Vector3(1f, 1f, 1f);
 
-            //Setup middle point to position to later.
-            middle = new Vector3();
-
-            //Set the size to an odd number, otherwise game can not be cetered correctly at this moment. 
-            iSize = ConvertToOddNumbers(iSize);//CHANGE THIS ONCE AUTOMATION ADDED
+            //Assign the new grid based on User input.
+            iSize = gridNumbers.GridSize();
 
         }
 
-        void SetupGridPositioning()
+        void SetupGridPositioningAndSizing()
         {
-            //Assign the position to the middle of screen.
-            transform.position = middle;
+            //Check if rt is actually been assigned.
+            if (rt == null)
+            {
+                rt = this.GetComponent<RectTransform>();
+            }
 
+            //Assign to the game manager grid and set to 1f localScale.
             foreach (Tile tile in tileGrid)
             {
-                tile.transform.SetParent(transform);
+                tile.transform.SetParent(rt);
                 tile.transform.localScale = new Vector3(1f, 1f, 1f);
             }
-            transform.localScale = new Vector3(2.75f, 2.75f, 2.75f);
-            transform.position = new Vector3(0f, 0.45f, 0f);
-        }
 
-        //Converts both x and y of IntVector2 to odd numbers.
-        IntVector2 ConvertToOddNumbers(IntVector2 size)
-        {
-            size.x = Mathf.Clamp(size.x, 3, 11);
-            size.y = Mathf.Clamp(size.y, 3, 11);
-
-            if (size.x % 2 == 0)
+            //Check if gridLayout is actually been assigned.
+            if (gridLayout == null)
             {
-                size.x += 1;
+                gridLayout = GetComponent<GridLayoutGroup>();
             }
 
-            if (size.y % 2 == 0)
-            {
-                size.y += 1;
-            }
+            //Get the width and height of the Game Manager RectTransform.
+            float width = rt.rect.width;
+            float height = rt.rect.height;
 
-            return size;
+            //Stop messes with changes to gridSlotSize, it cannot go over 1f without issues.
+            gridSlotSize = Mathf.Clamp(gridSlotSize, 0.1f, 0.99f);
+
+            //Create the size of each tile in relation to the available size.
+            float cellSize = (width / iSize.x) * gridSlotSize;
+
+            //The Remaining amount of gridSlotSize will be put into spacing, to create an even looking field of tiles.
+            float cellSSpacing = (width / iSize.x) * (1f - gridSlotSize);
+
+            //Assign cellSize and cellSSpacing to the gridLayout on Game Manager.
+            gridLayout.cellSize = new Vector2(cellSize, cellSize);
+            gridLayout.spacing = new Vector2(cellSSpacing, cellSSpacing);
+
+            //Set the RectTransform position to the chosen center of the screen.
+            rt.localPosition = gridPosition;
         }
+
+
 
         //Accessed by individual squares to check win conditions and assign tile on grid variable.
         public void SwitchSquare(IntVector2 iCoordinates)
@@ -170,53 +183,118 @@ namespace NoughtsAndCrosses
         //Checks each tile win condition.
         void CheckWinCondition()
         {
-            //These win conditions will work for a 3x3 grid but will  require automation for larger grids.
-            //This was a quick implementation method.
-            #region Manually Entered Win Conditions
-            if (tileGrid[0, 0].squareState == currentTurn && tileGrid[0, 1].squareState == currentTurn && tileGrid[0, 2].squareState == currentTurn)
+            //Check each possible win combination with current points active for a win condition.
+            CheckDirections();
+
+            //Check if it is a draw or next turn.
+            CheckDraw();
+        }
+
+        //Check for win condition in straight lines
+        private bool CheckDirectionForWin(int startPoint, int endPoint, bool horizontal)
+        {
+            int match = 0;
+
+            for (int i = 0; i < endPoint; i++)
             {
-                Win();
+                //Check the Horizontal.
+                if (horizontal)
+                {
+                    if (tileGrid[i, startPoint].state == currentTurn)
+                    {
+                        match++;
+                    }
+                }
+                else //Check the Vertical.
+                {
+                    if (tileGrid[startPoint, i].state == currentTurn)
+                    {
+                        match++;
+                    }
+                }
             }
-            if (tileGrid[1, 0].squareState == currentTurn && tileGrid[1, 1].squareState == currentTurn && tileGrid[1, 2].squareState == currentTurn)
+
+            return CheckWinList(match, endPoint);
+        }
+
+        //Confirm if CheckDirectionForWin returns as all true.
+        bool CheckWinList(int matches, int length)
+        {
+            if (matches >= length)
             {
-                Win();
+                return true;
             }
-            if (tileGrid[2, 0].squareState == currentTurn && tileGrid[2, 1].squareState == currentTurn && tileGrid[2, 2].squareState == currentTurn)
+            else
+            {
+                return false;
+            }
+        }
+
+        void CheckDirections()
+        {
+            //Check Horizontal Direction for Win.
+            for (int x = 0; x < tileGrid.GetLength(0); x++)
+            {
+                if (CheckDirectionForWin(x, tileGrid.GetLength(1), true) == true)
+                {
+                    Win();
+                }
+            }
+
+            //Check Vertical Direction for Win.
+            for (int y = 0; y < tileGrid.GetLength(1); y++)
+            {
+                if (CheckDirectionForWin(y, tileGrid.GetLength(0), false) == true)
+                {
+                    Win();
+                }
+            }
+
+            //Check the diagonals of the square grid.
+            CheckDiagonal(true);
+            CheckDiagonal(false);
+        }
+
+        void CheckDiagonal(bool Ascending)
+        {
+            int match = 0;
+
+            //Check between i is lower than both grid lengths.
+            for (int i = 0; i < tileGrid.GetLength(0) && i < tileGrid.GetLength(1); i++)
+            {
+                //Ascending Order
+                if (Ascending)
+                {
+                    if (tileGrid[i, i].state == currentTurn)
+                    {
+                        match++;
+                    }
+                }
+                else //Descending Order
+                {
+                    if (tileGrid[i, tileGrid.GetLength(1) - 1 - i].state == currentTurn)
+                    {
+                        match++;
+                    }
+                }
+            }
+
+            if (CheckWinList(match, tileGrid.GetLength(0)))
             {
                 Win();
             }
 
-            if (tileGrid[0, 0].squareState == currentTurn && tileGrid[1, 0].squareState == currentTurn && tileGrid[2, 0].squareState == currentTurn)
-            {
-                Win();
-            }
-            if (tileGrid[0, 1].squareState == currentTurn && tileGrid[1, 1].squareState == currentTurn && tileGrid[2, 1].squareState == currentTurn)
-            {
-                Win();
-            }
-            if (tileGrid[0, 2].squareState == currentTurn && tileGrid[1, 2].squareState == currentTurn && tileGrid[2, 2].squareState == currentTurn)
-            {
-                Win();
-            }
+        }
 
-            if (tileGrid[0, 0].squareState == currentTurn && tileGrid[1, 1].squareState == currentTurn && tileGrid[2, 2].squareState == currentTurn)
-            {
-                Win();
-            }
-
-            if (tileGrid[0, 2].squareState == currentTurn && tileGrid[1, 1].squareState == currentTurn && tileGrid[2, 0].squareState == currentTurn)
-            {
-                Win();
-            }
-            #endregion
-
-            //If the win condition has not been played/set to active then count number of squares filled in.
+        void CheckDraw()
+        {
+            //If a win has been attained CheckDraw will not trigger.
             if (!winner.activeSelf)
             {
                 int quickCount = 0;
                 foreach (Tile tile in tileGrid)
                 {
-                    if (tile.squareState == SquareOption.Cross || tile.squareState == SquareOption.Naught)
+                    if (tile.state == SquareOption.Cross || tile.state == SquareOption.Naught)
                     {
                         quickCount++;
                     }
@@ -279,6 +357,12 @@ namespace NoughtsAndCrosses
             winner.GetComponent<TextMeshProUGUI>().text = "Draw";
             WinConditionSet();
             //let down sound *crowd* awwwwww
+        }
+
+        //Go fullscreen.
+        public void Fullscreen()
+        {
+            Screen.fullScreen = !Screen.fullScreen;
         }
 
     }

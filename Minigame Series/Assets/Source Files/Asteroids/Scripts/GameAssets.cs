@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Asteroids
@@ -7,6 +5,7 @@ namespace Asteroids
     public static class GameAssets
     {
         [Header("Store Game Assets and Values")]
+        public static bool onlineMultiplayer = false; //This needs to be specified as players will use Single Player controls.
         public static bool singlePlayer = true; //Check if we are playing with more than one player.
         public static bool gamePlaying = false; //Game Officially playing for player, stops and starts game, use Time.timeScale for pause.
         public static int score = 0; //game Score, gets reset on restart.
@@ -15,6 +14,7 @@ namespace Asteroids
         public static readonly float edgeOfScreenX = 8.9f; //end of the x position of screen.
         public static readonly float edgeOfScreenY = 5f; //end of the y position of screen.
         private static readonly float t = 0.01f; //Used to add a bit of space between edge and teleport point to stop rapid teleporting.
+
 
         //Teleports objects to the opposite side of the screen.
         public static void ContainingArea(GameObject obj)

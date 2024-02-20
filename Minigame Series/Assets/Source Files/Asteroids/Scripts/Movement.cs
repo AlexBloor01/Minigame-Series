@@ -9,14 +9,14 @@ namespace Asteroids
         [Header("Controls Movement")]
         [SerializeField] private Rigidbody2D rb;
         [SerializeField] private SpriteRenderer fire;
-        private float thrustSpeed = 1f;
+        private float thrustSpeed = 2f;
         private float rotationSpeed = 220f;
 
         //Pushes player in direction of player object.
         public void ForwardThrust()
         {
             fire.enabled = true; //Turn on rocket booster visuals.
-            rb.AddRelativeForce(new Vector2(0f, 1f) * thrustSpeed * Time.deltaTime, ForceMode2D.Impulse);
+            rb.AddRelativeForce(Vector2.up * thrustSpeed * Time.deltaTime, ForceMode2D.Impulse);
 
             //Early Experiment to try and move without Rigidbody.
             #region Experiment

@@ -88,7 +88,7 @@ namespace Asteroids
         void InstantiateItem(GameObject obj, PlayerSide side)
         {
             //Instantiate Item and set its name
-            GameObject newobj = Instantiate(obj, new Vector3(), Quaternion.identity);
+            GameObject newobj = (GameObject)Instantiate(obj, new Vector3(), Quaternion.identity);
             newobj.name = newobj.name;
 
             //Set this as parent to keep the scene neat.
@@ -97,16 +97,21 @@ namespace Asteroids
             //Add to a list so it can be deleted later.
             gameplayObjects.Add(newobj);
 
-            // For multiplayer, controller settings.
-            if (obj.tag == player.tag && GameAssets.singlePlayer == false)
+            if (obj.tag == player.tag)
             {
                 //Increment number of players, only needed with multiplayer.
                 GameAssets.numberOfPlayers++;
+                //Assign this game Manager to restart game later.
+                newobj.GetComponentInChildren<PlayerController>().gameManager = this;
+            }
 
-                //assign a control scheme to each player
-                newobj.GetComponent<PlayerController>().playerSide = side;
+            // For multiplayer, controller settings.
+            if (obj.tag == player.tag && GameAssets.singlePlayer == false)
+            {
+                //Assign a control scheme to each player.
+                newobj.GetComponentInChildren<PlayerController>().playerSide = side;
 
-                //create one to the left and one to the right of center screen.
+                //Create one to the left and one to the right of center screen.
                 Vector2 newPos = new Vector2(0f, 0f);
                 if (side == PlayerSide.Left)
                 {

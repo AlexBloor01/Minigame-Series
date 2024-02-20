@@ -8,7 +8,7 @@ namespace NoughtsAndCrosses
         [Header("Square Tile")]
         public GameManager gameManager; //used to access whole grid, check win condition, and apply visuals.
         public IntVector2 iCoordinates; //This objects position in the grid for reference.
-        public SquareOption squareState = SquareOption.None; //This tiles current state.
+        public SquareOption state = SquareOption.None; //This tiles current state.
 
         private void Awake()
         {
@@ -47,7 +47,7 @@ namespace NoughtsAndCrosses
         //Updates square tile, this is called in Game Manager to get the current turn then apply it.
         public void UpdateSquare(SquareOption currentState)
         {
-            squareState = currentState;
+            state = currentState;
         }
 
 
