@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class GridNumbers : MonoBehaviour
 {
@@ -10,21 +11,22 @@ public class GridNumbers : MonoBehaviour
     public int y = 3;
 
     //Text in scenes for x and y value.
-    [SerializeField] private TextMeshProUGUI textAreaX;
-    [SerializeField] private TextMeshProUGUI textAreaY;
+    [SerializeField] private TMP_InputField textAreaX;
+    [SerializeField] private TMP_InputField textAreaY;
+
 
     //Update the grid size in Game Manager by editing and returning user inputted grid sizes.
     public IntVector2 GridSize()
     {
         //This is a quick fix, before Implementation of multi-size Noughts and Crosses. Add FIX later.
         //For the time being this stops having to edit two values for the sake of one.
-        y = x;
+        // y = x;
 
         //Create a new value based on user inputted x and y.
         IntVector2 newSize = new IntVector2(x, y);
 
         //Make the grid square.
-        newSize = ConvertToHighestNumber(newSize);
+        // newSize = ConvertToHighestNumber(newSize);
 
         //Convert new value.
         x = newSize.x;
@@ -93,6 +95,34 @@ public class GridNumbers : MonoBehaviour
         value--;
 
         //Assign new Value to text area.
+        UpdateTextAreas();
+    }
+
+    public void OnEndEditInputField()
+    {
+        TMP_InputField thisInputField = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponent<TMP_InputField>();
+
+        int which = 0;
+        if (thisInputField.text == "")
+        {
+            thisInputField.text = which.ToString();
+        }
+        else
+        {
+            int newValue = int.Parse(thisInputField.text);
+            which = newValue;
+            thisInputField.text = newValue.ToString();
+
+            if (thisInputField == textAreaX)
+            {
+                x = which;
+            }
+            else
+            {
+                y = which;
+            }
+        }
+
         UpdateTextAreas();
     }
 

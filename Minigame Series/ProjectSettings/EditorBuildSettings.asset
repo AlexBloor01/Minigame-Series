@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Asteroids.unity
-    guid: c4410f9b2c6a40a42870cf1a616701ed
+    path: Assets/Scenes/Noughts And Crosses.unity
+    guid: 2efd2992c72006a42a42d1d25e9c860d
   m_configObjects: {}
