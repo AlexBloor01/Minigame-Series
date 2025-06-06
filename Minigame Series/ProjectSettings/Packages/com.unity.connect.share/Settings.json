@@ -6,7 +6,7 @@
             {
                 "type": "System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
                 "key": "buildOutputDirList",
-                "value": "{\"m_Value\":\"C:/Users/Cex/Documents/Github/Minigame-Series/Minigame Series/Builds/Infinity Noughts and Crosses;C:/Users/Cex/Documents/Github/Minigame-Series/Minigame Series/Build/Asteroids [WebGL];C:/Users/Cex/Documents/Github/Minigame-Series/Minigame Series/Build/Noughts and Crosses [WebGL];C:/Users/Cex/Documents/Github/Minigame-Series/Minigame Series/Build/Pong [WebGL];;;;;;\"}"
+                "value": "{\"m_Value\":\"C:/Users/Cex/Documents/Github/Minigame-Series/Minigame Series/Builds/Infinity Noughts and Crosses/Build/Infinity Noughts and Crosses [WebGL];C:/Users/Cex/Documents/Github/Minigame-Series/Minigame Series/Builds/Infinity Noughts and Crosses;C:/Users/Cex/Documents/Github/Minigame-Series/Minigame Series/Build/Asteroids [WebGL];C:/Users/Cex/Documents/Github/Minigame-Series/Minigame Series/Build/Noughts and Crosses [WebGL];C:/Users/Cex/Documents/Github/Minigame-Series/Minigame Series/Build/Pong [WebGL];;;;;\"}"
             }
         ]
     }
