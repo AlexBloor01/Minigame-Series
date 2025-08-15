@@ -12,7 +12,7 @@ namespace NoughtsAndCrosses
 
         public Action clickAction;
         public GameManager gameManager; //used to access whole grid, check win condition, and apply visuals.
-        public IntVector2 tileCoordinates; //This objects position in the grid for reference.
+        public Vector2Int tileCoordinates; //This objects position in the grid for reference.
         public SquareOption state = SquareOption.None; //This tiles current state.
 
         private void Awake()

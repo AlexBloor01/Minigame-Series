@@ -16,14 +16,14 @@ public class GridNumbers : MonoBehaviour
 
 
     //Update the grid size in Game Manager by editing and returning user inputted grid sizes.
-    public IntVector2 GridSize()
+    public Vector2Int GridSize()
     {
         //This is a quick fix, before Implementation of multi-size Noughts and Crosses. Add FIX later.
         //For the time being this stops having to edit two values for the sake of one.
         // y = x;
 
         //Create a new value based on user inputted x and y.
-        IntVector2 newSize = new IntVector2(x, y);
+        Vector2Int newSize = new Vector2Int(x, y);
 
         //Make the grid square.
         // newSize = ConvertToHighestNumber(newSize);
@@ -141,7 +141,7 @@ public class GridNumbers : MonoBehaviour
     }
 
     //Converts to the grid to the highest number out of the two in size, turns it into a square.
-    IntVector2 ConvertToHighestNumber(IntVector2 size)
+    Vector2Int ConvertToHighestNumber(Vector2Int size)
     {
         if (size.x > size.y)
         {

@@ -1,0 +1,31 @@
+3 Options for expansion. 
+
+Change the following formula inside of SetupDiagonalWinVariance()
+
+diagonalWinVariance = Mathf.CeilToInt((gridSize.x / varianceGridThreshhold) - defaultDiagonalWinVarienceApplied);
+
+// Odd numbers need an extra diagonalWinVariance to make them more fair games.
+if (gridSize.x % 2 != 0)
+  diagonalWinVariance += defaultOddDiagonalWinVarienceIncrease;
+
+This formula works I think up until about 9x9 or maybe 12x12 then players will see the diamond. 
+Because the board needs to expand to inifity, a change to this to allow more diagonal wins to occur must be added.
+
+
+The second expansion is a board within a board 
+So grid within a grid, ultimately this will literally be a weird setup which will 
+require the seperation of the scoring checks to be seperated so we end up with 3 scripts... I think.
+1 being the overaching grid, 1 being the inner grid, and one holding the win conditions. 
+So reformatting what a tile is defined as would likely have to happen. Also 
+an update to the UI with a tick box for the possibility of a game within a game, 
+and an outer and inner grid number setting. 
+
+If you really want to go overboard a game within a game within a game, or ever expansive. 
+However crashes would likely be an issue at that point and maybe a reset button would be useful too.
+
+
+So yeah, both would be head scratchers.
+
+The third which wuld be simple but still a pain to find a ui spot for it would 
+be adding a button that takes the highest grid number and making a square. 
+This way you wouldnt have to set both numbers individually.
