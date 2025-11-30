@@ -270,8 +270,8 @@ PlayerSettings:
   AndroidTargetDevices: 0
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: C:/Users/Cex/Documents/Game Dev/Keystore Manager/Keystore/Ferret
-    Studios Keystore.keystore
+  AndroidKeystoreName: C:/Users/Cex/Documents/Game Dev/Keystore Manager/Old - Cube
+    Dropper/Ferret_Android_Keystore.keystore
   AndroidKeyaliasName: ferret studios
   AndroidEnableArmv9SecurityFeatures: 0
   AndroidBuildApkPerCpuArchitecture: 0
