@@ -143,7 +143,7 @@ PlayerSettings:
   loadStoreDebugModeEnabled: 0
   visionOSBundleVersion: 1.0
   tvOSBundleVersion: 1.0
-  bundleVersion: 2
+  bundleVersion: 3
   preloadedAssets: []
   metroInputSource: 0
   wsaTransparentSwapchain: 0
@@ -173,7 +173,7 @@ PlayerSettings:
     iPhone: 0
     tvOS: 0
   overrideDefaultApplicationIdentifier: 0
-  AndroidBundleVersionCode: 2
+  AndroidBundleVersionCode: 3
   AndroidMinSdkVersion: 22
   AndroidTargetSdkVersion: 36
   AndroidPreferredInstallLocation: 1
@@ -270,8 +270,8 @@ PlayerSettings:
   AndroidTargetDevices: 0
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: C:/Users/Cex/Documents/Game Dev/Keystore Manager/Old - Cube
-    Dropper/Ferret_Android_Keystore.keystore
+  AndroidKeystoreName: C:/Users/Cex/Documents/Game Dev/Keystore Manager/Keystore/Ferret
+    Studios Keystore.keystore
   AndroidKeyaliasName: ferret studios
   AndroidEnableArmv9SecurityFeatures: 0
   AndroidBuildApkPerCpuArchitecture: 0
@@ -465,8 +465,8 @@ PlayerSettings:
       m_Kind: 1
       m_SubKind: 
     - m_Textures:
-      - {fileID: 2800000, guid: 5a65afd44065ef74d9d6393c384a7965, type: 3}
-      - {fileID: 2800000, guid: 0a445cda6a7ebed4f913ed4fedd338f9, type: 3}
+      - {fileID: 2800000, guid: f42cff9319d912b42a8462b16e50cd87, type: 3}
+      - {fileID: 2800000, guid: 2936cef3daad12344be8b773cadf7907, type: 3}
       m_Width: 432
       m_Height: 432
       m_Kind: 2
